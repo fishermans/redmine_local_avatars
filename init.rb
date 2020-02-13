@@ -32,7 +32,7 @@ receiver.to_prepare  do
 	require_dependency 'user'
 
 	AccountController.send(:include,  LocalAvatarsPlugin::AccountControllerPatch)
-	ApplicationHelper.send(:include,  LocalAvatarsPlugin::ApplicationAvatarPatch)
+	AvatarsHelper.send(:include,  LocalAvatarsPlugin::AvatarsHelperPatch)
 	MyController.send(:include,  LocalAvatarsPlugin::MyControllerPatch)
 	User.send(:include,  LocalAvatarsPlugin::UsersAvatarPatch)
 	UsersController.send(:include,  LocalAvatarsPlugin::UsersControllerPatch)
@@ -43,7 +43,7 @@ require 'local_avatars'
 
 # patches to Redmine
 require "account_controller_patch.rb"
-require "application_helper_avatar_patch.rb"
+require "avatars_helper_patch.rb"
 require "my_controller_patch.rb"
 require "users_avatar_patch.rb"   # User model
 require "users_controller_patch.rb"

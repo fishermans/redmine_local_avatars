@@ -19,7 +19,7 @@
 require 'local_avatars'
 
 module LocalAvatarsPlugin
-  module ApplicationAvatarPatch
+  module AvatarsHelperPatch
     def self.included(base) # :nodoc:    
       base.class_eval do
         alias_method :avatar_without_local, :avatar
@@ -28,12 +28,15 @@ module LocalAvatarsPlugin
     end
 
 		def avatar_with_local(user, options = { })
-			if user.is_a?(User)then
-				av = user.attachments.find_by_description 'avatar'
-				if av then
+			if user.is_a?(User) then
+				avatar = user.attachments.find_by_description 'avatar'
+				options[:class] = GravatarHelper::DEFAULT_OPTIONS[:class] + " " + options[:class] if options[:class]
+				options[:style] = "margin-left: 0px"
+				if avatar then
 					image_url = url_for :only_path => true, :controller => 'account', :action => 'get_avatar', :id => user
-					options[:size] = "64" unless options[:size]
-					return "<img class=\"gravatar\" width=\"#{options[:size]}\" height=\"#{options[:size]}\" src=\"#{image_url}\" />".html_safe
+					return image_tag image_url, GravatarHelper::DEFAULT_OPTIONS.except(:default, :rating, :ssl).merge(options)
+				else
+					return image_tag 'anonymous.png', GravatarHelper::DEFAULT_OPTIONS.except(:default, :rating, :ssl).merge(options)
 				end
 			end
 			avatar_without_local(user, options)
